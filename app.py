@@ -1,8 +1,6 @@
 from flask import Flask #this is our backend microframework
 from flask import render_template #handy dandy ext to render our html layout
 
-
-
 app = Flask(__name__)
 
 @app.route("/")
