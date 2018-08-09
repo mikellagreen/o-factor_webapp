@@ -1,6 +1,5 @@
 from flask import Flask #this is our backend microframework
 from flask import render_template #handy dandy ext to render our html layout
-from flask_pymongo import PyMongo #flask specific bridge to mongodb driver (pymongo)
 
 
 
