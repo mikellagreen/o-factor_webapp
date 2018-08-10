@@ -1,5 +1,5 @@
 d3.queue()
-    .defer(d3.json, "data.json")
+    .defer(d3.json, "temp_data.json")
     .await(makeGraphs); 
 //we will want to add a .defer for each of the data jsons
 
