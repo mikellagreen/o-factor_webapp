@@ -16,12 +16,6 @@
   <link rel="stylesheet" href="../static/lib/css/keen-dashboards.css">
   <link rel="stylesheet" href="../static/lib/css/dc.css">
   <link href="../static/lib/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-
-
-
-
-  <!-- Dashboard -->
-
 </head>
 <body class="keen-dashboard" style="padding-top: 80px;">
 
@@ -51,7 +45,7 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-sm-6">
       <div class="chart-wrapper">
         <div class="chart-title">
           Total Articles Scraped By Journal
@@ -60,7 +54,7 @@
           <div id="dc-code-chart"></div>
         </div>
         <div class="chart-notes">
-          Notes about this chart
+           
         </div>
       </div>
     </div>
@@ -73,7 +67,7 @@
             <div id="total-scraped"></div>
         </div>
         <div class="chart-notes">
-            Notes about this chart
+           
         </div>
       </div>
     </div>
@@ -86,7 +80,7 @@
               <div id="total-codeshared"></div>
           </div>
           <div class="chart-notes">
-              Notes about this chart
+             
           </div>
         </div>
       </div>
@@ -99,92 +93,38 @@
                 <div id="total-datashared"></div>
             </div>
             <div class="chart-notes">
-                Notes about this chart
+               
             </div>
           </div>
         </div>
   </div>
 
   <div class="row">
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-6">
       <div class="chart-wrapper">
         <div class="chart-title">
-          Ratio of Open Source By Journal over Time
+          Code Sharing By Year 
         </div>
         <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
+          <img src="../static/lib/img/code_sharing_by_year_5journals.png" width="600" height="400">
         </div>
         <div class="chart-notes">
-          Notes about this chart
         </div>
       </div>
     </div>
-    <div class="col-sm-6 col-md-4">
+    <div class="col-sm-6">
       <div class="chart-wrapper">
         <div class="chart-title">
-          Cell Title
+          Data Sharing By Year
         </div>
         <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
+            <img src="../static/lib/img/data_sharing_by_year_5journals.png" width="600" height="400">
         </div>
         <div class="chart-notes">
-          Notes about this chart
         </div>
       </div>
     </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Cell Title
-        </div>
-        <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
-        </div>
-        <div class="chart-notes">
-          Notes about this chart
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Cell Title
-        </div>
-        <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
-        </div>
-        <div class="chart-notes">
-          Notes about this chart
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Cell Title
-        </div>
-        <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
-        </div>
-        <div class="chart-notes">
-          Notes about this chart
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Cell Title
-        </div>
-        <div class="chart-stage">
-
-        </div>
-        <div class="chart-notes">
-          Notes about this chart
-        </div>
-      </div>
-    </div>
-  </div>
+      
 
 </div>
 
@@ -195,12 +135,13 @@
 <script type="text/javascript">
 
 
-d3.csv("../static/lib/js/groupedData2.csv", function(data) {
+d3.csv("../static/lib/js/groupedDataFinal.csv", function(data) {
 
   var numScrapedByJournalChart = dc.rowChart("#dc-code-chart");
   var scraped = dc.numberDisplay("#total-scraped");
   var total_ds = dc.numberDisplay("#total-datashared");
   var total_cs = dc.numberDisplay("#total-codeshared");
+
  
 
   var stats = crossfilter(data);
@@ -234,6 +175,7 @@ d3.csv("../static/lib/js/groupedData2.csv", function(data) {
   var totalcs = stats.groupAll().reduceSum(function(d) { return +d.code_shared; });
   var numArtbyJournalbyYear = yearVal.group().reduce(function(stats) { return stats.journal; });
   var numArtByJournal = journalVal.group().reduceSum(function(d) { return +d.articles; });
+  var dataSharedByJournal = journalVal.group().reduceSum(function(d) { return +d.data_shared/+d.articles; })
 
   scraped 
     .formatNumber(d3.format("d"))
@@ -251,13 +193,14 @@ d3.csv("../static/lib/js/groupedData2.csv", function(data) {
     .group(totalcs);
 
   numScrapedByJournalChart
-    .width(800)
-    .height(500)
+    .width(700)
+    .height(400)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .dimension(journalVal)
     .group(numArtByJournal)
     .elasticX(true)
     .ordinalColors(["rgb(72,191,142)", "rgb(64,104,52)", "rgb(129,139,215)", "rgb(173,88,162)", "rgb(174,31,209)", "rgb(226,113,46)", "rgb(174,135,136)", "rgb(97,61,56)", "rgb(186,218,221)", "rgb(173,213,31)", "rgb(83,242,89)", "rgb(214,6,26)", "rgb(247,209,83)", "rgb(71,154,188)", "rgb(105,97,249)", "rgb(233,201,250)", "rgb(227,2,147)", "rgb(16,85,138)", "rgb(184,136,53)", "rgb(245,151,250)"]);
+
 
 
 
