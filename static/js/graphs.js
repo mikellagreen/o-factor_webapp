@@ -1,11 +1,10 @@
-d3.queue()
-    .defer(d3.json, "temp_data.json")
-    .await(makeGraphs); 
+var q = d3.queue() 
+q.defer(d3.csv, "temp_data.csv")
+q.await(makeGraphs); 
 //we will want to add a .defer for each of the data jsons
 
-function makeGraphs(error, dataJSON){
+function makeGraphs(error, dataJSON) {
     var data = dataJSON;
-    var alldata = allJSON;
     //crossfilter instance
     var ndx = crossfilter(data);
 
