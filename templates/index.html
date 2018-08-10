@@ -193,7 +193,9 @@
 </div>
 
 <script type="text/javascript">
-d3.csv("../groupedData2.csv", function(data) {
+
+
+d3.csv("../static/lib/js/groupedData2.csv", function(data) {
 
   var numScrapedByJournalChart = dc.rowChart("#dc-code-chart");
   var scraped = dc.numberDisplay("#total-scraped");
