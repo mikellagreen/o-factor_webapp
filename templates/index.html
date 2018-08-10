@@ -37,7 +37,7 @@
       <a class="navbar-brand" href="../">
         <span class="glyphicon glyphicon-chevron-left"></span>
       </a>
-      <a class="navbar-brand" href="./">O-Factor &raquo; Data Explorer</a>
+      <a class="navbar-brand" href="../">O-Factor &raquo; Data Explorer</a>
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-left">
@@ -54,7 +54,7 @@
     <div class="col-sm-8">
       <div class="chart-wrapper">
         <div class="chart-title">
-          Data Shared by Journal
+          Total Articles Scraped By Journal
         </div>
         <div class="chart-stage">
           <div id="dc-code-chart"></div>
@@ -67,23 +67,49 @@
     <div class="col-sm-4">
       <div class="chart-wrapper">
         <div class="chart-title">
-          Cell Title
+          Total Articles Scraped 
         </div>
         <div class="chart-stage">
-            <div id="time-chart"></div>
+            <div id="total-scraped"></div>
         </div>
         <div class="chart-notes">
-          merp.
+            Notes about this chart
         </div>
       </div>
     </div>
+    <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Code Shared Articles 
+          </div>
+          <div class="chart-stage">
+              <div id="total-codeshared"></div>
+          </div>
+          <div class="chart-notes">
+              Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+          <div class="chart-wrapper">
+            <div class="chart-title">
+              Total Data Shared Articles
+            </div>
+            <div class="chart-stage">
+                <div id="total-datashared"></div>
+            </div>
+            <div class="chart-notes">
+                Notes about this chart
+            </div>
+          </div>
+        </div>
   </div>
 
   <div class="row">
     <div class="col-sm-6 col-md-4">
       <div class="chart-wrapper">
         <div class="chart-title">
-          Cell Title
+          Ratio of Open Source By Journal over Time
         </div>
         <div class="chart-stage">
           <img data-src="holder.js/100%x120/white">
@@ -151,7 +177,7 @@
           Cell Title
         </div>
         <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
+
         </div>
         <div class="chart-notes">
           Notes about this chart
@@ -167,9 +193,13 @@
 </div>
 
 <script type="text/javascript">
-d3.csv("groupedData1.csv", function(data) {
+d3.csv("groupedData2.csv", function(data) {
 
-  var shareCodeChart = dc.rowChart("#dc-code-chart");
+  var numScrapedByJournalChart = dc.rowChart("#dc-code-chart");
+  var scraped = dc.numberDisplay("#total-scraped");
+  var total_ds = dc.numberDisplay("#total-datashared");
+  var total_cs = dc.numberDisplay("#total-codeshared");
+ 
 
   var stats = crossfilter(data);
   var journalVal = stats.dimension(function (d) { return d.journal; });
@@ -177,7 +207,7 @@ d3.csv("groupedData1.csv", function(data) {
   var dataSharedVal = stats.dimension(function (d) { return +d.data_shared; });
   var codeRelVal = stats.dimension(function (d) { return +d.code_relevant; });
   var preprintVal = stats.dimension(function (d) { return +d.preprint; });
-  var dataURVal = stats.dimension(function (d) { return +d.data_upon_request });
+  var dataURVal = stats.dimension(function (d) { return +d.data_upon_request; });
   var codeSharedVal = stats.dimension(function (d) { return +d.code_shared; });
   var codeURVal = stats.dimension(function (d) { return +d.code_upon_request; });
   var preregVal = stats.dimension(function (d) { return +d.preregistration; });
@@ -190,21 +220,46 @@ d3.csv("groupedData1.csv", function(data) {
   var rCodeRequestVal = stats.dimension(function (d) { return +d.rCodeRequest; });
   var rPreRegVal = stats.dimension(function (d) { return +d.rPreReg; });
   var rOSFVal = stats.dimension(function (d) { return +d.rOSF; });
+
+  var yearDataShared = stats.dimension(function (d) { return [+d.year, +d.rDataShared]; });
+  var ydsgroup = yearDataShared.group(function (d) { return d.journal; });
+  var yearCodeShared = stats.dimension(function (d) { return [+d.year, +d.rCodeShared]; });
+  var ycsgroup = yearCodeShared.group(function(d) { return d.journal; });
  
-  var totalNumScraped = stats.groupAll().reduceCount().value();
-  var numArtbyJournalbyYear = yearVal.group().reduceCount(function(stats) { return stats.journal; });
+  
+  var totalNumScraped = stats.groupAll().reduceSum(function(d) { return +d.articles; });
+  var totalds = stats.groupAll().reduceSum(function(d) { return +d.data_shared; });
+  var totalcs = stats.groupAll().reduceSum(function(d) { return +d.code_shared; });
+  var numArtbyJournalbyYear = yearVal.group().reduce(function(stats) { return stats.journal; });
   var numArtByJournal = journalVal.group().reduceSum(function(d) { return +d.articles; });
 
+  scraped 
+    .formatNumber(d3.format("d"))
+    .valueAccessor(function(d){ return d; })
+    .group(totalNumScraped);
 
+  total_ds
+    .formatNumber(d3.format("d"))
+    .valueAccessor(function(d){ return d; })
+    .group(totalds);
 
-  shareCodeChart
-    .width(600)
-    .height(160)
+  total_cs
+    .formatNumber(d3.format("d"))
+    .valueAccessor(function(d){ return d; })
+    .group(totalcs);
+
+  numScrapedByJournalChart
+    .width(800)
+    .height(500)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
     .dimension(journalVal)
     .group(numArtByJournal)
     .elasticX(true)
-    .xAxis().ticks(4);
+    .ordinalColors(["rgb(72,191,142)", "rgb(64,104,52)", "rgb(129,139,215)", "rgb(173,88,162)", "rgb(174,31,209)", "rgb(226,113,46)", "rgb(174,135,136)", "rgb(97,61,56)", "rgb(186,218,221)", "rgb(173,213,31)", "rgb(83,242,89)", "rgb(214,6,26)", "rgb(247,209,83)", "rgb(71,154,188)", "rgb(105,97,249)", "rgb(233,201,250)", "rgb(227,2,147)", "rgb(16,85,138)", "rgb(184,136,53)", "rgb(245,151,250)"]);
+
+
+
+  
   dc.renderAll();
 });
 </script>

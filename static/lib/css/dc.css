@@ -96,8 +96,8 @@ div.dc-chart {
     fill-opacity: 0.6; }
 
 .dc-chart g.row text {
-  fill: #fff;
-  font-size: 12px;
+  fill: rgb(1, 3, 26);
+  font-size: 15px;
   cursor: pointer; }
 
 .dc-chart g.dc-tooltip path {
@@ -208,7 +208,9 @@ div.dc-chart {
   .dc-legend .dc-legend-item {
     cursor: pointer; }
 
-.dc-hard .number-display {
+.dc-hard .number-display { 
+  font-size: 29px;
+  fill: #00f;
   float: none; }
 
 div.dc-html-legend {
